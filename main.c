@@ -3,6 +3,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#define sleep(ms) Sleep(ms)
+#else
+#include <unistd.h>
+#define sleep(ms) usleep((ms) * 1000)
+#endif
+
 #define SAMPLE_RATE 44100
 #define MAX_SAMPLES (SAMPLE_RATE * 2) // 2 seconds of audio
 
@@ -62,7 +70,7 @@ void RGBToSound(unsigned char red, unsigned char green, unsigned char blue) {
     printf("Blue frequency: %.2f Hz\n", blueFreq);
     
     // wait until done playing
-    while (IsSoundPlaying(sound)) {}
+    while (IsSoundPlaying(sound)) {sleep(10);}
     
     UnloadSound(sound);
     free(samples);
